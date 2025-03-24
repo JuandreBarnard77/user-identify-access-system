@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: myproject_backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=db;Database=MyDb;User Id=sa;Password=YourPassword;
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    restart: always
+    networks:
+      - mynetwork
+    command: >
+      sh -c "dotnet ef database update && dotnet MyProject.dll"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: myproject_frontend
+    depends_on:
+      - backend
+    ports:
+      - "4200:80"
+    restart: always
+    networks:
+      - mynetwork
+
+  db:
+    image: "mcr.microsoft.com/azure-sql-edge"
+    container_name: myproject_db
+    environment:
+      SA_PASSWORD: "reallyStrongPwd123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    restart: always
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge

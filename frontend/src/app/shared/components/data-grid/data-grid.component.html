@@ -1,0 +1,70 @@
+<dx-data-grid
+  #grid
+  [dataSource]="dataSource"
+  [keyExpr]="keyExpr"
+  [allowColumnResizing]="gridProperties.allowColumnResizing"
+  [allowColumnReordering]="gridProperties.allowColumnReordering"
+  [columnHidingEnabled]="gridProperties.columnHidingEnabled"
+  [rowAlternationEnabled]="gridProperties.rowAlternationEnabled"
+  [wordWrapEnabled]="gridProperties.wordWrapEnabled"
+  [cellHintEnabled]="gridProperties.cellHintEnabled"
+  [showBorders]="gridProperties.showBorders"
+  [showColumnHeaders]="gridProperties.showColumnHeaders"
+  [showColumnLines]="gridProperties.showColumnLines"
+>
+  <dxo-pager
+    [visible]="true"
+    [showInfo]="gridProperties.pagerShowInfo"
+    [showPageSizeSelector]="true"
+    [allowedPageSizes]="[10, 20, 40]"
+    [showNavigationButtons]="true">
+  </dxo-pager>
+  <dxo-search-panel [visible]="gridProperties.searchPanelVisible"></dxo-search-panel>
+  <dxo-column-chooser
+    [enabled]="gridProperties.columnChooserEnabled"
+    mode="select">
+  </dxo-column-chooser>
+  <dxo-header-filter
+    [visible]="gridProperties.headerFilterVisible"
+  >
+  </dxo-header-filter>
+  <dxo-group-panel
+    [visible]="gridProperties.groupPanelVisible"
+  >
+  </dxo-group-panel>
+  <dxo-grouping
+    [autoExpandAll]="gridProperties.groupingAutoExpandAll"
+    [contextMenuEnabled]="gridProperties.groupingContextMenuEnabled"
+  >
+  </dxo-grouping>
+  <dxo-group-operation-descriptions></dxo-group-operation-descriptions>
+  <dxo-filter-row [visible]="gridProperties.filterRowVisible"></dxo-filter-row>
+  <dxo-load-panel [enabled]="false"></dxo-load-panel>
+  <dxo-state-storing
+    [enabled]="gridProperties.stateStoringEnabled"
+  >
+  </dxo-state-storing>
+  @for (column of columns; track $index) {
+    <dxi-column
+      [width]="column.width"
+      [allowSearch]="true"
+      [dataField]="column.dataField"
+      [caption]="column.caption"
+      [dataType]="column.dataType"
+      [visibleIndex]="column.visibleIndex"
+    >
+    </dxi-column>
+  }
+  <dxo-selection mode="single">
+  </dxo-selection>
+  <dxo-export [enabled]="gridProperties.exportEnabled" [allowExportSelectedData]="gridProperties.allowExportSelectedData">
+  </dxo-export>
+  <dxo-editing
+    [mode]="editType"
+    [allowUpdating]="allowUpdating"
+    [allowDeleting]="allowDeleting"
+    [allowAdding]="allowAdding"
+    [useIcons]="true"
+  >
+  </dxo-editing>
+</dx-data-grid>
