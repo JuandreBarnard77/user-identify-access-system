@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using UserIdentityAccess.Application.DTOs;
+using UserIdentityAccess.Application.Interfaces;
 using UserIdentityAccess.Application.Services;
 
 namespace UserIdentityAccess.API.Controllers;
@@ -8,11 +9,13 @@ namespace UserIdentityAccess.API.Controllers;
 [Route("api/users")]
 public class UserController : ControllerBase
 {
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
+    private readonly IUserGroupService _userGroupService;
     
-    public UserController(UserService userService)
+    public UserController(IUserService userService, IUserGroupService userGroupService)
     {
         _userService = userService;
+        _userGroupService = userGroupService;
     }
     
     /// <summary>
@@ -24,7 +27,7 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetAllUsers()
     {
         var users = await _userService.GetAllUsersAsync();
-        return Ok(users);
+        return Ok(users.Data);
     }
 
     /// <summary>
@@ -88,17 +91,62 @@ public class UserController : ControllerBase
         return deleted.Success ? NoContent() : NotFound();
     }
 
+    /// <summary>
+    /// Gets count of users
+    /// </summary>
+    /// <returns>Count of users</returns>
     [HttpGet("count")]
+    [SwaggerResponse(200, "Users retrieved successfully", typeof(TotalCountDto))]
     public async Task<IActionResult> CountUsers()
     {
         var count = await _userService.GetAllUserTotalCountAsync();
         return Ok(count);
     }
     
+    /// <summary>
+    /// Gets list of users with the amount of groups assigned to them
+    /// </summary>
+    /// <returns>List of users</returns>
     [HttpGet("group-count")]
-    public async Task<IActionResult> CountGroups()
+    [SwaggerResponse(200, "Users retrieved successfully", typeof(IEnumerable<UserGroupCountDto>))]
+    public async Task<IActionResult> CountNameGroups()
     {
-        throw new NotImplementedException();
+        var userGroup = await _userGroupService.GetUserGroupCountsAsync();
+        return Ok(userGroup.Data);
     }
+
+    /// <summary>
+    /// Inserts a new UserGroup.
+    /// </summary>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="groupId">The ID of the group.</param>
+    /// <returns>The newly created userGroup connection.</returns>
+    [HttpPost( "{userId}/groups/{groupId}")]
+
+    [SwaggerResponse(201, "UserGroup created successfully")]
+    [SwaggerResponse(400, "Invalid request")]
+    public async Task<IActionResult> AddUserGroup(string userId, string groupId)
+    {
+        var createdUserGroup = await _userGroupService.CreateUserGroupAsync(int.Parse(userId), int.Parse(groupId));
+        if (createdUserGroup.Success)
+        {
+            return Created();
+        } 
+        return BadRequest(createdUserGroup.Errors);
+    } 
     
+    /// <summary>
+    /// Deletes an UserGroup by IDs.
+    /// </summary>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="groupId">The ID of the group.</param>
+    /// <returns>Success or failure message.</returns>
+    [HttpDelete("{userId}/groups/{groupId}")]
+    [SwaggerResponse(204, "UserGroup deleted successfully")]
+    [SwaggerResponse(404, "UserGroup not found")]
+    public async Task<IActionResult> DeleteUserGroup(string userId, string groupId)
+    {
+        var deleted = await _userGroupService.DeleteUserGroupAsync(int.Parse(userId), int.Parse(groupId));
+        return deleted.Success ? NoContent() : NotFound();
+    }
 }

@@ -1,43 +1,58 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { User } from '../dtos/user';
 import { HttpService } from '../../../../core/interceptors/http-service/http.service';
+import { environment } from '../../../../../environments/environment';
+import { UserDto } from '../dtos/user.dto';
+import { UserMapper } from '../mapper/user.mapper';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  constructor(private http: HttpService) { }
-
-  getUsers(): Observable<User[]> {
-    return of([{ id: 1, name: 'John Doe' }]); // Mock API call
+  private headers: HttpHeaders;
+  private mapper: UserMapper = new UserMapper();
+  constructor(private http: HttpService) {
+    this.headers = new HttpHeaders({
+      'Accept': '*/*',
+      'Accept-Language': 'en-GB,en;q=0.7',
+      'Connection': 'keep-alive',
+    });
   }
 
-  public add(object: User): Observable<User> {
-    const url = `${this.baseUrl}/dbprovider/dbconnections`;
-    return this.http.post(url, this.mapper.mapToDto(object));
+
+  public addUser(object: User): Observable<User> {
+    const url = `${environment.apiBaseUrl}/users`;
+    return this.http.post(url, this.headers, this.mapper.mapToDto(object));
   }
 
-  public edit(object: User): Observable<User> {
-    const url = `${this.baseUrl}/dbprovider/dbconnections`;
-    return this.http.put(url, this.mapper.mapToDto(object));
+  public editUser(object: User): Observable<User> { console.log(object)
+    const url = `${environment.apiBaseUrl}/users/${object.id}`;
+    return this.http.put(url, this.headers, this.mapper.mapToDto(object));
   }
 
-  public delete(object: User): Observable<void> {
-    const url = `${this.baseUrl}/dbprovider/dbconnections`;
-    return this.http.delete(url, this.mapper.mapToDto(object));
+  public deleteUser(objectId: number): Observable<void> {
+    const url = `${environment.apiBaseUrl}/users/${objectId}`;
+    return this.http.delete(url, this.headers);
   }
 
-  public getAll(): Observable<User[]> {
-    const url = `${this.baseUrl}/dbprovider/dbconnections`;
-    const response = this.http.get<RequestResponse<DbConnectionDto>>(url);
-    return response.pipe(map(data => this.mapper.mapToModels(data._responseData)));
+  public getAllUsers(): Observable<User[]> {
+    const url = `${environment.apiBaseUrl}/users`;
+    const response = this.http.get<UserDto[]>(url, this.headers);
+    return response.pipe(map(data => this.mapper.mapToModels(data)));
   }
 
-  public getUserCount() Observable<number> {
-    const url = `${this.baseUrl}/dbprovider/dbconnections`;
-    const response = this.http.get<RequestResponse<DbConnectionDto>>(url);
-    return response.pipe(map(data => this.mapper.mapToModels(data._responseData)));
+  public getUserById(userId: number): Observable<User> {
+    const url = `${environment.apiBaseUrl}/users/${userId}`;
+    const response = this.http.get<UserDto>(url, this.headers);
+    return (response.pipe(map(data => this.mapper.mapToModel(data))));
+  }
+
+  public getUserCount(userId: number): Observable<User> {
+    const url = `${environment.apiBaseUrl}/users/count`;
+    const response = this.http.get<UserDto>(url, this.headers);
+    return (response.pipe(map(data => this.mapper.mapToModel(data))));
   }
 }
 

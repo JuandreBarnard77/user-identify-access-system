@@ -14,6 +14,12 @@ public class Permission
         SetName(name);
     }
     
+    public Permission(int id, string name)
+    {
+        Id = id;
+        SetName(name);
+    }
+    
     public void SetName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))

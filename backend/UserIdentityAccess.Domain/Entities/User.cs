@@ -17,6 +17,14 @@ public class User
         SetLastName(lastName);
         SetEmail(email);
     }
+    
+    public User(int id, string firstName, string lastName , string email)
+    {
+        Id = id;
+        SetFirstName(firstName);
+        SetLastName(lastName);
+        SetEmail(email);
+    }
 
     public void SetFirstName(string firstName)
     {

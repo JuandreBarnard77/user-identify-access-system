@@ -5,8 +5,7 @@ using UserIdentityAccess.Application.Validators;
 using UserIdentityAccess.Domain.Entities;
 
 namespace UserIdentityAccess.Application.Services;
-
-public class GroupService(IRepository<Group> groupRepository, IMapper mapper): IGroupService
+public class GroupService(IRepository<Group> groupRepository, IRepository<User> userRepository, IMapper mapper): IGroupService
 {
     public async Task<ServiceResponse<IEnumerable<GroupDto>>> GetAllGroupsAsync()
     {
@@ -72,5 +71,17 @@ public class GroupService(IRepository<Group> groupRepository, IMapper mapper): I
         groupRepository.Remove(group);
         await groupRepository.SaveChangesAsync();
         return new ServiceResponse<bool>(true, true, []);;
+    }
+    
+    public async Task<TotalCountDto> GetAllGroupTotalCountAsync()
+    {
+        var groupCount = await groupRepository.CountAsync();
+        return mapper.Map<TotalCountDto>(groupCount);
+    }
+    
+    public async Task<ServiceResponse<List<UserDto>>> GetUsersInGroupAsync(int groupId)
+    {
+        var data = mapper.Map<List<UserDto>>((await userRepository.GetWhereAsync(u => u.UserGroups.Any(ug => ug.GroupId == groupId))).ToList());
+        return new ServiceResponse<List<UserDto>>(true, data, []);
     }
 }

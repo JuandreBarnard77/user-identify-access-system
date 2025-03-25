@@ -1,7 +1,8 @@
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { User } from '../dtos/user';
 
 export class MockUserService {
-  getUsers() {
-    return of([{ id: 1, name: 'Mock User' }]); // Simulated API response
+  getUsers(): Observable<User[]> {
+    return of([{ id: 1, firstname: 'Mock User', lastname: '2', email: 'some@email.com' }]); // Simulated API response
   }
 }

@@ -15,4 +15,8 @@ public interface IRepository<T> where T : class
     Task<IEnumerable<T>> GetWithIncludesAsync(
         Expression<Func<T, bool>> predicate,
         params Expression<Func<T, object>>[] includes);
+
+    Task<IEnumerable<TResult>> GetGroupedAsync<TGroupKey, TResult>(
+        Expression<Func<T, TGroupKey>> groupBy,
+        Expression<Func<IGrouping<TGroupKey, T>, TResult>> select);
 }

@@ -8,4 +8,5 @@ public interface IUserService
     Task<ServiceResponse<UserDto>> CreateUserAsync(UserDto userDto);
     Task<ServiceResponse<UserDto>> UpdateUserAsync(int id, UserDto userDto);
     Task<ServiceResponse<bool>> DeleteUserAsync(int id);
+    Task<TotalCountDto> GetAllUserTotalCountAsync();
 }

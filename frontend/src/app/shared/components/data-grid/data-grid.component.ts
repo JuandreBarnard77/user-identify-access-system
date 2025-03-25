@@ -6,7 +6,7 @@ import DevExpress from 'devextreme';
 import GridsEditMode = DevExpress.common.grids.GridsEditMode;
 
 @Component({
-  selector: 'grid',
+  selector: 'app-data-grid',
   standalone: true,
   imports: [
     DxDataGridModule,

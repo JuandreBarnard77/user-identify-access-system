@@ -3,11 +3,11 @@ using UserIdentityAccess.Application.DTOs;
 using UserIdentityAccess.Domain.Entities;
 
 namespace UserIdentityAccess.Application.Mappings;
-public class UserMappingProfile : Profile
+public class GroupMappingProfile : Profile
 {
-    public UserMappingProfile()
+    public GroupMappingProfile()
     {
-        CreateMap<User, UserDto>().ReverseMap();
+        CreateMap<Group, GroupDto>().ReverseMap();
         CreateMap<int, TotalCountDto>()
             .ForMember(dest => dest.Count, 
                 opt => opt.MapFrom(src => src));

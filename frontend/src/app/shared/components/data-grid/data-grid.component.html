@@ -48,6 +48,7 @@
     <dxi-column
       [width]="column.width"
       [allowSearch]="true"
+      [allowEditing]="column.allowEditing ?? true"
       [dataField]="column.dataField"
       [caption]="column.caption"
       [dataType]="column.dataType"
@@ -57,8 +58,6 @@
   }
   <dxo-selection mode="single">
   </dxo-selection>
-  <dxo-export [enabled]="gridProperties.exportEnabled" [allowExportSelectedData]="gridProperties.allowExportSelectedData">
-  </dxo-export>
   <dxo-editing
     [mode]="editType"
     [allowUpdating]="allowUpdating"

@@ -1,7 +1,7 @@
 namespace UserIdentityAccess.Domain.Entities;
 public class Group
 {
-    public int Id { get; }
+    public int Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
     
     private readonly List<UserGroup> _userGroups = [];
@@ -16,6 +16,12 @@ public class Group
     {
         SetName(name);
     }
+    
+    public Group(int id, string name)
+    {
+        Id = id;
+        SetName(name);
+    } 
     
     public void SetName(string name)
     {

@@ -63,22 +63,23 @@ public class UserIdentityAccessDbContext(DbContextOptions<UserIdentityAccessDbCo
         });
         
         modelBuilder.Entity<Permission>().HasData(
-            new Permission("Level 1"),
-            new Permission("Level 2"),
-            new Permission("Admin")
+            new Permission(1,"Level 1"),
+            new Permission(2,"Level 2"),
+            new Permission(3,"Admin")
         );
 
+        Group group1 = new Group("Red Team Developers");
         modelBuilder.Entity<Group>().HasData(
-            new Group("Red Team Developers"),
-            new Group("Admins"),
-            new Group("Blue Team Developers"),
-            new Group("Viewers")
+            new Group(1,"Red Team Developers"),
+            new Group(2,"Admins"),
+            new Group(3,"Blue Team Developers"),
+            new Group(4,"Viewers")
         );
 
         modelBuilder.Entity<User>().HasData(
-            new User("Bob","Steve","bobsteve@example.org"),
-            new User("Sandy","Stevin","sandysteven@example.org"),
-            new User("Johny","Robers","johnyrobers@example.org")
+            new User(1,"Bob","Steve","bobsteve@example.org"),
+            new User(2,"Sandy","Stevin","sandysteven@example.org"),
+            new User(3,"Johny","Robers","johnyrobers@example.org")
         );
         
         modelBuilder.Entity<GroupPermission>().HasData(

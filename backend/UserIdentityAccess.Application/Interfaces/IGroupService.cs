@@ -9,4 +9,6 @@ public interface IGroupService
     Task<ServiceResponse<GroupDto>> CreateGroupAsync(GroupDto groupDto);
     Task<ServiceResponse<GroupDto>> UpdateGroupAsync(int id, GroupDto groupDto);
     Task<ServiceResponse<bool>> DeleteGroupAsync(int id);
+    Task<TotalCountDto> GetAllGroupTotalCountAsync();
+    Task<ServiceResponse<List<UserDto>>> GetUsersInGroupAsync(int groupId);
 }

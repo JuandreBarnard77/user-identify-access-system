@@ -60,4 +60,11 @@ public class Repository<T> : IRepository<T> where T : class
 
         return await query.Where(predicate).ToListAsync();
     }
+    
+    public async Task<IEnumerable<TResult>> GetGroupedAsync<TGroupKey, TResult>(
+        Expression<Func<T, TGroupKey>> groupBy,
+        Expression<Func<IGrouping<TGroupKey, T>, TResult>> select)
+    {
+        return await _dbSet.GroupBy(groupBy).Select(select).ToListAsync();
+    }
 }

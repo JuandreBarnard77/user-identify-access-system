@@ -8,6 +8,7 @@ export interface ColumnProperties {
   allowFiltering?: boolean;
   allowGrouping?: boolean;
   allowSearch?: boolean;
+  allowEditing?: boolean;
   allowHeaderFiltering?: boolean;
   visibleIndex?: number;
   format?: string;
