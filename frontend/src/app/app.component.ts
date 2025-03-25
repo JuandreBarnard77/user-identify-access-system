@@ -23,8 +23,8 @@ export class AppComponent {
   title = 'uai-management';
   navigation: any[] = [
     { id: 1, text: "User", icon: "user", path: "inbox" },
-    { id: 2, text: "Group", icon: "group", path: "sent-mail" },
-    { id: 3, text: "Permission", icon: "key", path: "trash" }
+    // { id: 2, text: "Group", icon: "group", path: "sent-mail" },
+    // { id: 3, text: "Permission", icon: "key", path: "trash" }
   ];
   isDrawerOpen: boolean = true;
 }

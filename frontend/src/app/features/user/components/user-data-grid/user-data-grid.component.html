@@ -1,5 +1,17 @@
-<app-data-grid
-  [dataSource]="dataSource"
-  [columns]="properties"
->
-</app-data-grid>
+<p>User Count: {{count}}</p>
+<div class="list-container">
+  <p>Number of users per group count:</p>
+  <dx-tree-list [dataSource]="groupUser" keyExpr="groupName">
+    <dxi-column dataField="groupName" />
+    <dxi-column dataField="userCount" />
+  </dx-tree-list>
+</div>
+<br><br><br>
+<p>Users:</p>
+<div class="gridbase-container">
+  <app-data-grid
+    [dataSource]="dataSource"
+    [columns]="properties"
+  >
+  </app-data-grid>
+</div>

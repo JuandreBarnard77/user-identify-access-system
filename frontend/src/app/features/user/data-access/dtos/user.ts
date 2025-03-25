@@ -4,3 +4,8 @@ export interface User {
   lastname: string;
   email: string;
 }
+
+export interface GroupUserCount {
+  groupName: string;
+  userCount: number;
+}

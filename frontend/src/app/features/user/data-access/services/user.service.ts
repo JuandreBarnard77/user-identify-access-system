@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { User } from '../dtos/user';
+import { GroupUserCount, User } from '../dtos/user';
 import { HttpService } from '../../../../core/interceptors/http-service/http.service';
 import { environment } from '../../../../../environments/environment';
-import { UserDto } from '../dtos/user.dto';
-import { UserMapper } from '../mapper/user.mapper';
+import { GroupUserCountDto, TotalCountDto, UserDto } from '../dtos/user.dto';
+import { GroupUserMapper, UserMapper } from '../mapper/user.mapper';
 import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
@@ -13,6 +13,8 @@ import { HttpHeaders } from '@angular/common/http';
 export class UserService {
   private headers: HttpHeaders;
   private mapper: UserMapper = new UserMapper();
+  private groupUsermapper: GroupUserMapper = new GroupUserMapper();
+
   constructor(private http: HttpService) {
     this.headers = new HttpHeaders({
       'Accept': '*/*',
@@ -49,10 +51,16 @@ export class UserService {
     return (response.pipe(map(data => this.mapper.mapToModel(data))));
   }
 
-  public getUserCount(userId: number): Observable<User> {
+  public getUserCount(): Observable<number> {
     const url = `${environment.apiBaseUrl}/users/count`;
-    const response = this.http.get<UserDto>(url, this.headers);
-    return (response.pipe(map(data => this.mapper.mapToModel(data))));
+    const response = this.http.get<TotalCountDto>(url, this.headers);
+    return (response.pipe(map(data => data.count)));
+  }
+
+  public getUserGroupCount(): Observable<GroupUserCount[]> {
+    const url = `${environment.apiBaseUrl}/groups/user-count`;
+    const response = this.http.get<GroupUserCountDto[]>(url, this.headers);
+    return response.pipe(map(data => this.groupUsermapper.mapToModels(data)));
   }
 }
 

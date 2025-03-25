@@ -1,10 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { DataGridComponent } from '../../../../shared/components/data-grid/data-grid.component';
-import { User } from '../../data-access/dtos/user';
 import { ColumnProperties } from '../../../../shared/components/data-grid/properties/column';
 import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { UserService } from '../../data-access/services/user.service';
 import CustomStore from 'devextreme/data/custom_store';
+import { DxListModule, DxTreeListModule } from 'devextreme-angular';
+import { GroupUserCount } from '../../data-access/dtos/user';
 
 export const userColumnProperties: ColumnProperties[] = [
   {
@@ -48,6 +49,8 @@ export const userColumnProperties: ColumnProperties[] = [
   standalone: true,
   imports: [
     DataGridComponent,
+    DxListModule,
+    DxTreeListModule,
   ],
   templateUrl: './user-data-grid.component.html',
   styleUrl: './user-data-grid.component.css'
@@ -56,6 +59,8 @@ export class UserDataGridComponent implements OnInit, OnDestroy {
   public properties = userColumnProperties;
   private readonly _onDestroy$: Subject<void> = new Subject();
   public dataSource!: CustomStore;
+  public count: number = 0;
+  public groupUser: GroupUserCount[] = [];
 
   constructor(private userService: UserService) { }
 
@@ -82,11 +87,37 @@ export class UserDataGridComponent implements OnInit, OnDestroy {
           return firstValueFrom(this.userService.editUser(updatedObject));
         } catch (error) {
           console.error('Update error:', error);
-          throw error; // Notify DataGrid of failure
+          throw error;
         }
       },
       remove: (key) => firstValueFrom(this.userService.deleteUser(key))
     });
+
+    this.userService.getUserCount()
+      .pipe(
+        takeUntil(this._onDestroy$),
+      )
+      .subscribe({
+        next: value => {
+          this.count = value;
+        },
+        error: err => {
+          console.error(err);
+        }
+      });
+
+    this.userService.getUserGroupCount()
+      .pipe(
+        takeUntil(this._onDestroy$),
+      )
+      .subscribe({
+        next: value => {
+          this.groupUser = value;
+        },
+        error: err => {
+          console.error(err);
+        }
+      });
   }
 
   public ngOnDestroy(): void {

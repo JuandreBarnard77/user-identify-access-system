@@ -4,27 +4,28 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
-    container_name: myproject_backend
+      dockerfile: UserIdentityAccess.API/Dockerfile
+    container_name: useridentityaccess_backend
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Server=db;Database=MyDb;User Id=sa;Password=YourPassword;
+      - ConnectionStrings__DefaultConnection=Server=db;Database=IDENTITY_ACCESS_DB;User Id=SA;Password=reallyStrongPwd123;
     depends_on:
       - db
     ports:
-      - "5000:5000"
-      - "5001:5001"
+      - "5002:5000"
+      - "5003:5001"
     restart: always
     networks:
       - mynetwork
     command: >
-      sh -c "dotnet ef database update && dotnet MyProject.dll"
+      sh -c "dotnet ef database update --project UserIdentityAccess.Infrastructure/ &&
+             dotnet UserIdentityAccess.API.dll"
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: myproject_frontend
+    container_name: useridentityacces_frontend
     depends_on:
       - backend
     ports:
@@ -34,8 +35,8 @@ services:
       - mynetwork
 
   db:
-    image: "mcr.microsoft.com/azure-sql-edge"
-    container_name: myproject_db
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    container_name: useridentityaccess_db
     environment:
       SA_PASSWORD: "reallyStrongPwd123"
       ACCEPT_EULA: "Y"
